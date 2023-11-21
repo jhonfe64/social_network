@@ -1,13 +1,13 @@
 const { Schema, model, default: mongoose } = require("mongoose") 
 
 const FollowSchema = new Schema({
-    //los usuarios q dieron follow
+    //El id del usuario que inici asesiòn
     user: {
         type: Schema.ObjectId, 
         ref: "User"
     },
     //el usuario seguido
-    follower: {
+    followed: {
         type: Schema.ObjectId,
         ref: "User"
     },
