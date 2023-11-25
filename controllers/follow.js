@@ -9,8 +9,6 @@ const pruebaFollow = (req, res) => {
     })
 }
 
-
-
 //accin de seguir aun usuario
 const save = async (req, res) => {
 
@@ -82,9 +80,9 @@ const unfollow = async (req, res) => {
     }
 }
 
-
 //accion de listado de usarios que el que inicia cesion esta siguiendo (siguiendo)
 const following = async (req, res)=>{
+
     let userId = req.user.id
     const {id} = req.params
 
@@ -131,11 +129,51 @@ const following = async (req, res)=>{
 
 
 //accion de listado de usuarios que me siguen (soy seguido)
-const followers = (req, res) => {
-    return res.status(200).json({
-        status: "success",
-        message: "estos son los usuarios que te siguen"
-    })
+const followers = async (req, res) => {
+
+    let userId = req.user.id
+    const {id} = req.params
+
+    if(req.params.id) userId = id
+
+    let page = 1
+
+    if(req.params.page) {
+        page = req.params.page
+    }
+
+    //usuarios por pagina
+    const itemsPerPage = 5;
+
+    
+    try {
+        const followedUsers = await Follow.find({followed: userId}).populate("user followed", "-password -role -__v").paginate(page, itemsPerPage)
+        
+
+        if(followedUsers.length == 0) {
+            return res.status(200).json({
+                status: "success",
+                message: "no estas siguiendo a nadie"
+            })
+        }
+
+        //lista de los que sigo y me siguen
+        let followUserIds = await followService.followUserIds(req.user.id)
+     
+    
+        return res.status(200).json({
+            status: "success",
+            message: "estos son los usuarios que m esiguen",
+            followedUsers,
+            user_following: followUserIds.following,
+            users_follow_me: followUserIds.followers
+        })
+    } catch (error) {
+        return res.status(500).json({
+            status: "error",
+            message: "No se encuentran seguidores"
+        })
+    }
 }
 
 

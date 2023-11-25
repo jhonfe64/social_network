@@ -5,6 +5,7 @@ const {pruebaUser, register, login, profile, list, update, upload, avatar} = req
 const multer = require("multer")
 
 
+
 //config multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {

@@ -25,8 +25,8 @@ app.use(express.urlencoded({extended: true}))
 
 //cargar las rutas
 app.use("/api/follow", followRoutes)
-app.use("/api/publication", publicationRoutes)
 app.use("/api/user", userRoutes)
+app.use("/api/publication", publicationRoutes)
 
 
 //poner a escuchgar el servidor

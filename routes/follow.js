@@ -12,5 +12,6 @@ router.get("/following/:id/:page?", auth,  following)
 router.get("/followers/:id/:page?", auth,  followers)
 
 
+
 //exportar router
 module.exports = router

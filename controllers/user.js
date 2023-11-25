@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const { createToken, secret } = require("../services/jwt");
 const paginate = require("mongoose-pagination");
 const fs = require("fs");
+const {followThisUser} = require("../services/followService")
 
 //acciones de prueba
 const pruebaUser = (req, res) => {
@@ -142,10 +143,15 @@ const profile = async (req, res) => {
         message: "Usuario no encontrado",
       });
     }
+    //info de seguimiento
+    const followInfo = await followThisUser(req.user.id, id)
+  
     //aqui tambien se debuleven los datos de follows
     return res.status(200).json({
       status: "success",
       user: user,
+      followInfo: followInfo.following,
+      follower: followInfo.follower
     });
   } catch (error) {
     return res.status(500).json({
@@ -190,12 +196,17 @@ const list = async (req, res) => {
       });
     }
 
+    //lista de los que sigo y me siguen
+    let followUserIds = await followService.followUserIds(req.user.id)
+
     return res.status(200).json({
       status: "success",
       users: users,
       page,
       total_users: users.length,
       pages: numberOfpages,
+      user_following: followUserIds.following,
+      user_follow_me: followUserIds.followers
     });
   } catch (error) {
     return res.status(500).json({
